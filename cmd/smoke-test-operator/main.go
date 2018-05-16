@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -33,10 +34,18 @@ func copyTestsLocally() {
 	}
 }
 
+func getWatchNamespace() string {
+	value := os.Getenv("SMOKE_TEST_NAMESPACE")
+	if len(value) == 0 {
+		return "default"
+	}
+	return value
+}
+
 func main() {
 	printVersion()
 	copyTestsLocally()
-	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", "default", 5)
+	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", getWatchNamespace(), 5)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
