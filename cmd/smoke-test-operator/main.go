@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os/exec"
 	"runtime"
 
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
@@ -17,8 +18,23 @@ func printVersion() {
 	logrus.Infof("operator-sdk Version: %v", sdkVersion.Version)
 }
 
+func copyTestsLocally() {
+	cmdStr := "cp -fRL /smoke-tests/*.sh /tmp/"
+	_, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
+	if err != nil {
+		logrus.Errorf("Failed to copy tests locally: %s", err.Error())
+	}
+
+	cmdStr = "chmod 777 /tmp/*.sh"
+	_, err = exec.Command("/bin/sh", "-c", cmdStr).Output()
+	if err != nil {
+		logrus.Errorf("Failed to update file permissions: %s", err.Error())
+	}
+}
+
 func main() {
 	printVersion()
+	copyTestsLocally()
 	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", "default", 5)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())

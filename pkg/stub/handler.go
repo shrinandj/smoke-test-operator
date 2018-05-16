@@ -73,13 +73,7 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		}
 
 		// Execute script here
-		// 1. Copy the file to /tmp.
 		destFile := "/tmp/" + testToRun
-		fileCopy(testFile, destFile)
-		defer os.Remove(destFile)
-		logrus.Infof("Successfully copied script to %s", destFile)
-
-		// 2. Execute the copied file.
 		op, err := exec.Command("/bin/sh", "-c", destFile).Output()
 		if err != nil {
 			logrus.Errorf("Failed to execute script: %s", err.Error())
