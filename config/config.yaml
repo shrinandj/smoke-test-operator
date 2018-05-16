@@ -1,0 +1,3 @@
+apiVersion: smoketest.k8s.io/v1alpha1
+kind: SmokeTest
+projectName: smoke-test-operator
