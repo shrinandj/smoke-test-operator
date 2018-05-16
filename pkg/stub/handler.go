@@ -1,8 +1,6 @@
 package stub
 
 import (
-	"io"
-	"log"
 	"os"
 	"os/exec"
 
@@ -20,25 +18,6 @@ func NewHandler() handler.Handler {
 
 type Handler struct {
 	// Fill me
-}
-
-func fileCopy(sourceFile string, destFile string) {
-	from, err := os.Open(sourceFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer from.Close()
-
-	to, err := os.OpenFile(destFile, os.O_RDWR|os.O_CREATE, 0777)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer to.Close()
-
-	_, err = io.Copy(to, from)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func updateCR(cr *v1alpha1.SmokeTest, testOutput string) {
