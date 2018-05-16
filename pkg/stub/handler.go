@@ -12,10 +12,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// NewHandler creates and returns a new Handler object.
 func NewHandler() handler.Handler {
 	return &Handler{}
 }
 
+// Handler object has the Handle() method that executes for every smoketest object.
 type Handler struct {
 	// Fill me
 }
@@ -29,7 +31,11 @@ func updateCR(cr *v1alpha1.SmokeTest, testOutput string) {
 	logrus.Infof("Successfully updated TestOutput for smoketest %s", cr.Name)
 }
 
+// Handle is invoked everytime a smoketest custom resource is created/updated.
 func (h *Handler) Handle(ctx types.Context, event types.Event) error {
+	// Would be good if there was a way to disinguish between "create" and "update".
+	// Updates to the custom resource could be ignored. Creates should result
+	// in the test getting executed.
 	switch cr := event.Object.(type) {
 	case *v1alpha1.SmokeTest:
 		if cr.Status.TestOutput != "" {

@@ -45,7 +45,9 @@ func getWatchNamespace() string {
 func main() {
 	printVersion()
 	copyTestsLocally()
-	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", getWatchNamespace(), 5)
+	watchNamespace := getWatchNamespace()
+	logrus.Infof("Watching namespace %s", watchNamespace)
+	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", watchNamespace, 5)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
