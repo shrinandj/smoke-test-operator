@@ -25,5 +25,5 @@ type SmokeTestSpec struct {
 	// Fill me
 }
 type SmokeTestStatus struct {
-	// Fill me
+	TestOutput string
 }

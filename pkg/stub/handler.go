@@ -8,6 +8,7 @@ import (
 
 	"github.intuit.com/sjavadekar/smoke-test-operator/pkg/apis/smoketest/v1alpha1"
 
+	"github.com/operator-framework/operator-sdk/pkg/sdk/action"
 	"github.com/operator-framework/operator-sdk/pkg/sdk/handler"
 	"github.com/operator-framework/operator-sdk/pkg/sdk/types"
 	"github.com/sirupsen/logrus"
@@ -41,7 +42,7 @@ func fileCopy(sourceFile string, destFile string) {
 }
 
 func (h *Handler) Handle(ctx types.Context, event types.Event) error {
-	switch o := event.Object.(type) {
+	switch cr := event.Object.(type) {
 	case *v1alpha1.SmokeTest:
 		// Execute script here
 
@@ -58,7 +59,12 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 			return err
 		}
 
-		logrus.Infof("Completed command with output: %s (%s)", op, o.Name)
+		cr.Status.TestOutput = string(op)
+		err = action.Update(cr)
+		if err != nil {
+			logrus.Errorf("Failed to update cr: %v", err)
+		}
+		logrus.Infof("Successfully executed script for smoketest %s", cr.Name)
 	}
 	return nil
 }
