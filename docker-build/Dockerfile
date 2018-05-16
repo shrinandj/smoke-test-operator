@@ -1,4 +1,4 @@
-FROM sjavadekar/smoke-test-operator:latest
+FROM shrinand/smoke-test-operator-base:latest
 
 COPY kubectl /usr/local/bin/kubectl
 

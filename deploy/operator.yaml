@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: smoke-test-operator
-          image: sjavadekar/smoke-test-operator-base:latest
+          image: shrinand/smoke-test-operator-base:latest
           command:
           - smoke-test-operator
           imagePullPolicy: Always
