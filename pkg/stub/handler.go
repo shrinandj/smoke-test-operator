@@ -44,8 +44,12 @@ func fileCopy(sourceFile string, destFile string) {
 func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 	switch cr := event.Object.(type) {
 	case *v1alpha1.SmokeTest:
-		// Execute script here
+		if cr.Status.TestOutput != "" {
+			// SmokeTest has already been executed previously.
+			return nil
+		}
 
+		// Execute script here
 		// 1. Copy the file to /tmp.
 		destFile := "/tmp/test.sh"
 		fileCopy("/smoke-tests/test.sh", destFile)
