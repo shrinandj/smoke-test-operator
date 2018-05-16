@@ -60,7 +60,7 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 
 		testToRun := "test.sh"
 		if cr.Annotations != nil {
-			if val, ok := cr.Annotations["test_to_run"]; ok {
+			if val, ok := cr.Annotations["testToRun"]; ok {
 				testToRun = val
 				logrus.Infof("Found test to run annotation: %s", testToRun)
 			}
