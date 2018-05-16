@@ -7,3 +7,4 @@ dist/
 cmd/**/debug
 debug.test
 *.iml
+tmp/_output/
