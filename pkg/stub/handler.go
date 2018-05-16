@@ -1,6 +1,9 @@
 package stub
 
 import (
+	"io"
+	"log"
+	"os"
 	"os/exec"
 
 	"github.intuit.com/sjavadekar/smoke-test-operator/pkg/apis/smoketest/v1alpha1"
@@ -18,20 +21,44 @@ type Handler struct {
 	// Fill me
 }
 
+func fileCopy(sourceFile string, destFile string) {
+	from, err := os.Open(sourceFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer from.Close()
+
+	to, err := os.OpenFile(destFile, os.O_RDWR|os.O_CREATE, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer to.Close()
+
+	_, err = io.Copy(to, from)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 	switch o := event.Object.(type) {
 	case *v1alpha1.SmokeTest:
 		// Execute script here
-		cmdStr := "kubectl get namespaces"
-		cmd := exec.Command("/bin/sh", "-c", cmdStr)
-		output, err := cmd.Output()
 
+		// 1. Copy the file to /tmp.
+		destFile := "/tmp/test.sh"
+		fileCopy("/smoke-tests/test.sh", destFile)
+		defer os.Remove(destFile)
+		logrus.Infof("Successfully copied script to %s", destFile)
+
+		// 2. Execute the copied file.
+		op, err := exec.Command("/bin/sh", "-c", destFile).Output()
 		if err != nil {
-			logrus.Errorf(err.Error())
+			logrus.Errorf("Failed to execute script: %s", err.Error())
 			return err
 		}
 
-		logrus.Infof("Completed command with output %s (%s)", output, o.Name)
+		logrus.Infof("Completed command with output: %s (%s)", op, o.Name)
 	}
 	return nil
 }

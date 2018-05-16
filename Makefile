@@ -15,4 +15,4 @@ clean:
 
 # Cross compilation
 docker: build
-	cd docker-build; docker build -t shrinand/smoke-test-operator .
+	cd docker-build; docker build -t shrinand/smoke-test-operator .; docker push shrinand/smoke-test-operator

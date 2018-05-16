@@ -4,9 +4,9 @@ import (
 	"context"
 	"runtime"
 
-	stub "github.intuit.com/sjavadekar/smoke-test-operator/pkg/stub"
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
+	stub "github.intuit.com/sjavadekar/smoke-test-operator/pkg/stub"
 
 	"github.com/sirupsen/logrus"
 )
