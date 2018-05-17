@@ -64,11 +64,10 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		destFile := "/tmp/" + testToRun
 		op, err := exec.Command("/bin/sh", "-c", destFile).Output()
 		if err != nil {
-			logrus.Errorf("Failed to execute script: %s", err.Error())
-			return err
+			updateCR(cr, err.Error())
+		} else {
+			updateCR(cr, string(op))
 		}
-
-		updateCR(cr, string(op))
 	}
 	return nil
 }
