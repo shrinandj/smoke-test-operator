@@ -8,3 +8,4 @@ cmd/**/debug
 debug.test
 *.iml
 tmp/_output/
+deploy/operator.yaml
