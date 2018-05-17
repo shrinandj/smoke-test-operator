@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
-	stub "github.intuit.com/sjavadekar/smoke-test-operator/pkg/stub"
+	run "github.intuit.com/sjavadekar/smoke-test-operator/pkg/run"
 
 	"github.com/sirupsen/logrus"
 )
@@ -48,6 +48,6 @@ func main() {
 	watchNamespace := getWatchNamespace()
 	logrus.Infof("Watching namespace %s", watchNamespace)
 	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", watchNamespace, 5)
-	sdk.Handle(stub.NewHandler())
+	sdk.Handle(run.NewHandler())
 	sdk.Run(context.TODO())
 }
