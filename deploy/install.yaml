@@ -21,22 +21,30 @@ data:
   test.sh: |
     #!/bin/sh
     echo "Get pods:"
+    echo "---------------"
     /usr/local/bin/kubectl get pods -o wide
     echo "Get services:"
+    echo "---------------"
     /usr/local/bin/kubectl get services -o wide
     echo "Get config-maps:"
+    echo "---------------"
     /usr/local/bin/kubectl get cm -o wide
     echo "Get nodes:"
+    echo "---------------"
     /usr/local/bin/kubectl get node -o wide
   test_pod.sh: |
     #!/bin/sh
     echo "Creating deployment:"
+    echo "--------------------"
     /usr/local/bin/kubectl run nginx --image=nginx --namespace ${MY_NAMESPACE}
     echo "Sleeping ..."
+    echo "---------------"
     sleep 10
     echo "Get deployment:"
+    echo "---------------"
     /usr/local/bin/kubectl get deployment nginx --namespace ${MY_NAMESPACE}
     echo "Delete deployment:"
+    echo "------------------"
     /usr/local/bin/kubectl delete deployment nginx --namespace ${MY_NAMESPACE}
 kind: ConfigMap
 metadata:
