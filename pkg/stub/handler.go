@@ -14,12 +14,14 @@ import (
 
 // NewHandler creates and returns a new Handler object.
 func NewHandler() handler.Handler {
-	return &Handler{}
+	return &Handler{
+		defaultTest: "test.sh",
+	}
 }
 
 // Handler object has the Handle() method that executes for every smoketest object.
 type Handler struct {
-	// Fill me
+	defaultTest string
 }
 
 func updateCR(cr *v1alpha1.SmokeTest, testOutput string) {
@@ -43,7 +45,8 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 			return nil
 		}
 
-		testToRun := "test.sh"
+		testToRun := h.defaultTest
+		// Instead of annotation, the testToRun could come from a spec.
 		if cr.Annotations != nil {
 			if val, ok := cr.Annotations["testToRun"]; ok {
 				testToRun = val
