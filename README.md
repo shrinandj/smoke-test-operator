@@ -1,4 +1,4 @@
-# Project Title
+# Smoke-test-operator
 
 Smoke-test-operator is a Kubernetes operator for running smoke tests against a Kubernetes cluster. These tests can show the current health of various components of the Kubernetes cluster.
 
