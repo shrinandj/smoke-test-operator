@@ -1,6 +1,7 @@
 package run
 
 import (
+	"encoding/json"
 	"os"
 	"os/exec"
 
@@ -24,9 +25,19 @@ type Handler struct {
 	defaultTest string
 }
 
-func updateCR(cr *v1alpha1.SmokeTest, testOutput string) {
-	cr.Status.TestOutput = testOutput
-	err := action.Update(cr)
+// TestOutput captures the stdout and stderr for each test.
+type TestOutput struct {
+	Stdout string
+	Stderr string
+}
+
+func updateCR(cr *v1alpha1.SmokeTest, testOutput TestOutput) {
+	output, err := json.Marshal(testOutput)
+	if err != nil {
+		logrus.Errorf("Failed to create json of output: %v", err)
+	}
+	cr.Status.TestOutput = string(output)
+	err = action.Update(cr)
 	if err != nil {
 		logrus.Errorf("Failed to update cr: %v", err)
 	}
@@ -55,19 +66,21 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		}
 		testFile := "/smoke-tests/" + testToRun
 		if _, err := os.Stat(testFile); os.IsNotExist(err) {
-			logrus.Infof("Test %s does not exist for %s.", testFile, cr.Name)
-			updateCR(cr, "Test "+testFile+" does not exist")
+			errMsg := "Test " + testFile + " does not exist"
+			testOutput := TestOutput{Stdout: "", Stderr: errMsg}
+			updateCR(cr, testOutput)
 			return nil
 		}
 
 		// Execute script here
 		destFile := "/tmp/" + testToRun
 		op, err := exec.Command("/bin/sh", "-c", destFile).Output()
+		stdErr := ""
 		if err != nil {
-			updateCR(cr, err.Error())
-		} else {
-			updateCR(cr, string(op))
+			stdErr = err.Error()
 		}
+		testOutput := TestOutput{Stdout: string(op), Stderr: stdErr}
+		updateCR(cr, testOutput)
 	}
 	return nil
 }
