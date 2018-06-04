@@ -27,17 +27,28 @@ type Handler struct {
 
 // TestOutput captures the stdout and stderr for each test.
 type TestOutput struct {
-	Stdout string
-	Stderr string
+	Stdout       string
+	Stderr       string
+	OutputFormat string
 }
 
 func updateCR(cr *v1alpha1.SmokeTest, testOutput TestOutput) {
-	output, err := json.Marshal(testOutput)
-	if err != nil {
-		logrus.Errorf("Failed to create json of output: %v", err)
+	output := ""
+	if testOutput.OutputFormat == "json" {
+		op, err := json.Marshal(testOutput)
+		if err != nil {
+			logrus.Errorf("Failed to create json of output: %v", err)
+		}
+
+		output = string(op)
+	} else {
+		output = "stdout:\n"
+		output = output + testOutput.Stdout
+		output = output + "\nstderr:\n"
+		output = output + testOutput.Stderr
 	}
 	cr.Status.TestOutput = string(output)
-	err = action.Update(cr)
+	err := action.Update(cr)
 	if err != nil {
 		logrus.Errorf("Failed to update cr: %v", err)
 	}
@@ -56,9 +67,19 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 			return nil
 		}
 
+		outputFormat := "text"
 		testToRun := h.defaultTest
 		// Instead of annotation, the testToRun could come from a spec.
 		if cr.Annotations != nil {
+			if val, ok := cr.Annotations["outputFormat"]; ok {
+				if val != "json" && val != "text" {
+					logrus.Fatal("Output format not text or json (%s)", val)
+				}
+
+				outputFormat = val
+				logrus.Infof("Output format set to %s", val)
+			}
+
 			if val, ok := cr.Annotations["testToRun"]; ok {
 				testToRun = val
 				logrus.Infof("Found test to run annotation: %s", testToRun)
@@ -67,7 +88,7 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		testFile := "/smoke-tests/" + testToRun
 		if _, err := os.Stat(testFile); os.IsNotExist(err) {
 			errMsg := "Test " + testFile + " does not exist"
-			testOutput := TestOutput{Stdout: "", Stderr: errMsg}
+			testOutput := TestOutput{Stdout: "", Stderr: errMsg, OutputFormat: outputFormat}
 			updateCR(cr, testOutput)
 			return nil
 		}
@@ -79,7 +100,7 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		if err != nil {
 			stdErr = err.Error()
 		}
-		testOutput := TestOutput{Stdout: string(op), Stderr: stdErr}
+		testOutput := TestOutput{Stdout: string(op), Stderr: stdErr, OutputFormat: outputFormat}
 		updateCR(cr, testOutput)
 	}
 	return nil
