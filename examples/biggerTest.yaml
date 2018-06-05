@@ -2,5 +2,5 @@ apiVersion: "smoketest.k8s.io/v1alpha1"
 kind: "SmokeTest"
 metadata:
   generateName: "smoke-test-"
-  annotations:
-    outputFormat: json
+spec:
+  testToRun: test_pod.sh

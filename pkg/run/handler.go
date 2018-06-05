@@ -69,22 +69,14 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 
 		outputFormat := "text"
 		testToRun := h.defaultTest
-		// Instead of annotation, the testToRun could come from a spec.
-		if cr.Annotations != nil {
-			if val, ok := cr.Annotations["outputFormat"]; ok {
-				if val != "json" && val != "text" {
-					logrus.Fatal("Output format not text or json (%s)", val)
-				}
-
-				outputFormat = val
-				logrus.Infof("Output format set to %s", val)
-			}
-
-			if val, ok := cr.Annotations["testToRun"]; ok {
-				testToRun = val
-				logrus.Infof("Found test to run annotation: %s", testToRun)
-			}
+		if cr.Spec.TestToRun != "" {
+			testToRun = cr.Spec.TestToRun
 		}
+
+		if cr.Spec.OutputFormat != "" {
+			outputFormat = cr.Spec.OutputFormat
+		}
+
 		testFile := "/smoke-tests/" + testToRun
 		if _, err := os.Stat(testFile); os.IsNotExist(err) {
 			errMsg := "Test " + testFile + " does not exist"

@@ -25,7 +25,8 @@ type SmokeTest struct {
 
 // SmokeTestSpec will contain the details of the SmokeTest spec.
 type SmokeTestSpec struct {
-	// Fill me
+	TestToRun    string `json:"testtorun,omitempty"`
+	OutputFormat string `json:"outputformat,omitempty"`
 }
 
 // SmokeTestStatus has the output status of each instance of the smoke test.
