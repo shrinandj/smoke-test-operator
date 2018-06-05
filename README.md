@@ -65,11 +65,9 @@ status:
 
 - The smoke tests to run are configured in a config-map called `smoke-test-config`
 - Actual tests are shell scripts
-- It is required to have at least one test called "test.sh"
-- When a custom-resource of type `smoketest` is created, the controller runs the smoke test. The output of the test is stored in the custom-resource.
-- If some test other than test.sh needs to be run, the smoketest CR should have the `testToRun` annotation with the name of the test (See `examples/testAnnotation.yaml` as an example)
-
-Add additional notes about how to deploy this on a live system
+- The CustomResource called smoketest has a 'testToRun' field in the spec. This field should be set to the test that should be run.
+- When the custom-resource is created, the controller reads the spec and runs the smoke test mentioned as 'testToRun'. The output of the test is stored in the custom-resource's Status field.
+- The output format can be plain text or json. The Spec also has a field called 'outputFormat'. The default is 'text'. Otherwise, set the 'outputFormat' field to 'json'.
 
 ## Built With
 
