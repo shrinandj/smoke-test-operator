@@ -19,21 +19,6 @@ func printVersion() {
 	logrus.Infof("operator-sdk Version: %v", sdkVersion.Version)
 }
 
-func copyTestsLocally() {
-	// There must be a better way to do this!
-	cmdStr := "cp -fRL /smoke-tests/*.sh /tmp/"
-	_, err := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	if err != nil {
-		logrus.Panic("Failed to copy tests locally: %s", err.Error())
-	}
-
-	cmdStr = "chmod 777 /tmp/*.sh"
-	_, err = exec.Command("/bin/sh", "-c", cmdStr).Output()
-	if err != nil {
-		logrus.Panic("Failed to update file permissions: %s", err.Error())
-	}
-}
-
 func getWatchNamespace() string {
 	value := os.Getenv("SMOKE_TEST_NAMESPACE")
 	if len(value) == 0 {
@@ -44,7 +29,6 @@ func getWatchNamespace() string {
 
 func main() {
 	printVersion()
-	copyTestsLocally()
 	watchNamespace := getWatchNamespace()
 	logrus.Infof("Watching namespace %s", watchNamespace)
 	sdk.Watch("smoketest.k8s.io/v1alpha1", "SmokeTest", watchNamespace, 5)
