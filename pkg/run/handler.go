@@ -86,8 +86,7 @@ func (h *Handler) Handle(ctx types.Context, event types.Event) error {
 		}
 
 		// Execute script here
-		destFile := "/tmp/" + testToRun
-		op, err := exec.Command("/bin/sh", "-c", destFile).Output()
+		op, err := exec.Command("/bin/sh", "+x", testFile).Output()
 		stdErr := ""
 		if err != nil {
 			stdErr = err.Error()
