@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"os"
-	"os/exec"
 	"runtime"
 
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
