@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/operator-framework/operator-sdk/pkg/sdk"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
-	run "github.intuit.com/sjavadekar/smoke-test-operator/pkg/run"
+	run "github.com/shrinandj/smoke-test-operator/pkg/run"
 
 	"github.com/sirupsen/logrus"
 )

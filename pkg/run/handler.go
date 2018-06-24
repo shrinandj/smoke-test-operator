@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.intuit.com/sjavadekar/smoke-test-operator/pkg/apis/smoketest/v1alpha1"
+	"github.com/shrinandj/smoke-test-operator/pkg/apis/smoketest/v1alpha1"
 
 	"github.com/operator-framework/operator-sdk/pkg/sdk/action"
 	"github.com/operator-framework/operator-sdk/pkg/sdk/handler"
